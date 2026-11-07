@@ -1,0 +1,29 @@
+name: Prepare BuildWorld
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  unpack:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Unpack BuildWorld
+        run: |
+          mkdir -p /tmp/buildworld
+          unzip -o BuildWorld_starter_project.zip -d /tmp/buildworld
+          cp -r /tmp/buildworld/BuildWorld/. .
+
+      - name: Commit project files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add project.godot scenes scripts assets README.md .gitignore
+          git commit -m "Prepare BuildWorld project" || echo "No changes to commit"
+          git push
